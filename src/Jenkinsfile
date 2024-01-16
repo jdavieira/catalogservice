@@ -1,0 +1,46 @@
+pipeline {
+    agent any
+
+    stages {
+        // checkout de master, based on jenkins configuration
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        // builds the java project
+        stage('Build') {
+            steps {
+                sh 'mvn clean install'
+            }
+        }
+
+        // runs the unit tests
+        stage('Unit Test') {
+            steps {
+                sh 'mvn test'
+            }
+
+            post {
+                always {
+                    junit '**/target/surefire-reports/TEST-*.xml'
+                }
+            }
+        }
+
+        // Run integration tests
+        stage('Integration Test') {
+            steps {
+                println 'test'
+                //sh 'mvn verify -Pintegration-test'
+            }
+
+            post {
+                always {
+                    junit '**/target/surefire-reports/TEST-*.xml'
+                }
+            }
+        }
+    }
+}
