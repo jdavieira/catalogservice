@@ -1,8 +1,8 @@
 pipeline {
     agent any
 
-    tools{
-            maven 'MAVEN_JENKINS'
+    tools {
+        maven "3.9.6"
     }
 
     stages {
@@ -16,7 +16,9 @@ pipeline {
         // builds the java project
         stage('Build') {
             steps {
-                sh 'mvn clean install'
+                sh "ssh -V"
+                sh "mvn -version"
+                sh "mvn clean install"
             }
         }
 
@@ -45,6 +47,12 @@ pipeline {
                     junit '**/target/surefire-reports/TEST-*.xml'
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
         }
     }
 }
