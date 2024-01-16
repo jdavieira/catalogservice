@@ -2,6 +2,7 @@ package com.critical.catalogservice.service.book;
 
 import com.critical.catalogservice.data.entity.Book;
 import com.critical.catalogservice.data.repository.BookRepository;
+import com.critical.catalogservice.dtos.book.BookAvailabilityDto;
 import com.critical.catalogservice.dtos.book.BookRequestDto;
 import com.critical.catalogservice.dtos.book.BookUpdateRequestDto;
 import com.critical.catalogservice.util.exception.EntityNullException;
@@ -12,6 +13,7 @@ import org.instancio.Instancio;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -56,9 +58,7 @@ public class BookServiceTests {
         var errorMessage = "Error while getting book";
         when(this.repository.save(any(Book.class))).thenThrow(new SaveEntityException(errorMessage));
         // Act
-        Exception exception = assertThrows(SaveEntityException.class, () -> {
-            this.service.createBook(bookDto);
-        });
+        Exception exception = assertThrows(SaveEntityException.class, () -> this.service.createBook(bookDto));
         // Assert
         Assertions.assertEquals(errorMessage, exception.getMessage());
     }
@@ -69,9 +69,7 @@ public class BookServiceTests {
         var errorMessage = "Book received is null";
         when(this.repository.save(any(Book.class))).thenThrow(new SaveEntityException(errorMessage));
         // Act
-        Exception exception = assertThrows(EntityNullException.class, () -> {
-            this.service.createBook(null);
-        });
+        Exception exception = assertThrows(EntityNullException.class, () -> this.service.createBook(null));
         // Assert
         Assertions.assertEquals(errorMessage, exception.getMessage());
     }
@@ -135,9 +133,7 @@ public class BookServiceTests {
         var errorMessage = "Book not found with the Title: " + bookTitle;
         when(this.repository.findByTitle(bookTitle)).thenReturn(null);
         // Act
-        Exception exception = assertThrows(EntityNotFoundException.class, () -> {
-            service.getBookByTitle(bookTitle);
-        });
+        Exception exception = assertThrows(EntityNotFoundException.class, () -> service.getBookByTitle(bookTitle));
         // Assert
         Assertions.assertEquals(errorMessage, exception.getMessage());
     }
@@ -161,9 +157,7 @@ public class BookServiceTests {
         var errorMessage = "Book not found with the Original Title: " + bookOriginalTitle;
         when(this.repository.findByOriginalTitle(bookOriginalTitle)).thenReturn(null);
         // Act
-        Exception exception = assertThrows(EntityNotFoundException.class, () -> {
-            service.getBookByOriginalTitle(bookOriginalTitle);
-        });
+        Exception exception = assertThrows(EntityNotFoundException.class, () -> service.getBookByOriginalTitle(bookOriginalTitle));
         // Assert
         Assertions.assertEquals(errorMessage, exception.getMessage());
     }
@@ -188,9 +182,7 @@ public class BookServiceTests {
         var errorMessage = "Book not found with the ISBN: " + bookIsbn;
         when(this.repository.findByIsbn(bookIsbn)).thenReturn(null);
         // Act
-        Exception exception = assertThrows(EntityNotFoundException.class, () -> {
-            service.getBookByISBN(bookIsbn);
-        });
+        Exception exception = assertThrows(EntityNotFoundException.class, () -> service.getBookByISBN(bookIsbn));
         // Assert
         Assertions.assertEquals(errorMessage, exception.getMessage());
     }
@@ -214,9 +206,7 @@ public class BookServiceTests {
         var errorMessage = "Book not found with the Synopsis: " + bookSynopsis;
         when(this.repository.findBySynopsis(bookSynopsis)).thenReturn(null);
         // Act
-        Exception exception = assertThrows(EntityNotFoundException.class, () -> {
-            service.getBookBySynopsis(bookSynopsis);
-        });
+        Exception exception = assertThrows(EntityNotFoundException.class, () -> service.getBookBySynopsis(bookSynopsis));
         // Assert
         Assertions.assertEquals(errorMessage, exception.getMessage());
     }
@@ -241,9 +231,7 @@ public class BookServiceTests {
         var errorMessage = "Book not found with the Id: " + bookId;
         when(this.repository.findById(bookId)).thenReturn(Optional.ofNullable(null));
         // Act
-        Exception exception = assertThrows(EntityNotFoundException.class, () -> {
-            service.getBookById(bookId);
-        });
+        Exception exception = assertThrows(EntityNotFoundException.class, () -> service.getBookById(bookId));
         // Assert
         Assertions.assertEquals(errorMessage, exception.getMessage());
     }
@@ -266,9 +254,7 @@ public class BookServiceTests {
         var bookId = 1;
         var errorMessage = "Book received is null";
         // Act
-        Exception exception = assertThrows(EntityNullException.class, () -> {
-            service.updateBook(bookId, null);
-        });
+        Exception exception = assertThrows(EntityNullException.class, () -> service.updateBook(bookId, null));
         // Assert
         Assertions.assertEquals(errorMessage, exception.getMessage());
     }
@@ -281,9 +267,7 @@ public class BookServiceTests {
         var errorMessage = "Book not found with the Id: " + bookId;
         when(this.repository.findById(bookId)).thenReturn(Optional.ofNullable(null));
         // Act
-        Exception exception = assertThrows(EntityNotFoundException.class, () -> {
-            service.updateBook(bookId, bookDto);
-        });
+        Exception exception = assertThrows(EntityNotFoundException.class, () -> service.updateBook(bookId, bookDto));
         // Assert
         Assertions.assertEquals(errorMessage, exception.getMessage());
         verify(repository, times(1)).findById(bookId);
@@ -301,9 +285,7 @@ public class BookServiceTests {
         when(this.repository.findById(bookId)).thenReturn(Optional.ofNullable(book));
         when(this.repository.save(any(Book.class))).thenThrow(new SaveEntityException(errorMessage));
         // Act
-        Exception exception = assertThrows(SaveEntityException.class, () -> {
-            service.updateBook(bookId, bookDto);
-        });
+        Exception exception = assertThrows(SaveEntityException.class, () -> service.updateBook(bookId, bookDto));
         // Assert
         Assertions.assertEquals(errorMessage, exception.getMessage());
         assertThat(logCaptor.getErrorLogs()).containsExactly(expectedMessage);
@@ -326,5 +308,26 @@ public class BookServiceTests {
         verify(repository, times(1)).findById(bookId);
         verify(repository, times(1)).save(any(Book.class));
         assertThat(logCaptor.getInfoLogs()).containsExactly(expectedMessage);
+    }
+
+    @Test
+    public void  givenSearchRequest_whenGettingBooksThatExist_thenReturnBooks(){
+        // Arrange
+        var optionalString = Optional.ofNullable("string");
+        var optionalFloat = Optional.ofNullable(1.0);
+        var optionalBool = Optional.ofNullable(false);
+        var optionalBookAvailabilityDto = Optional.ofNullable(BookAvailabilityDto.AVAILABLE);
+
+        var errorMessage = "Book not found with the search parameters sent";
+        when(this.repository.findAll(any(Specification.class))).thenReturn(new ArrayList<Book>());
+
+        // Act
+        Exception exception = assertThrows(EntityNotFoundException.class, () -> this.service.searchBooks(optionalString, optionalString, optionalString, optionalString,
+                optionalBool, optionalFloat, optionalFloat, optionalBool, optionalBookAvailabilityDto));
+
+        // Assert
+        Assertions.assertEquals(errorMessage, exception.getMessage());
+        assertThat(logCaptor.getWarnLogs()).containsExactly(errorMessage);
+
     }
 }
