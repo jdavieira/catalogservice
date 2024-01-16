@@ -6,13 +6,14 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.2.1</version>
-		<relativePath>./pom.xml</relativePath>
+		<relativePath/>
 	</parent>
 	<groupId>com.critical</groupId>
 	<artifactId>catalogservice</artifactId>
 	<version>1</version>
 	<name>Catalog Service</name>
 	<description>Catalog Service</description>
+	<packaging>jar</packaging>
 	<properties>
 		<java.version>17</java.version>
 		<springdoc.version>2.0.3</springdoc.version>
@@ -177,6 +178,7 @@
 					<dependency>
 						<groupId>org.postgresql</groupId>
 						<artifactId>postgresql</artifactId>
+						<version>42.6.0</version>
 					</dependency>
 				</dependencies>
 			</plugin>
