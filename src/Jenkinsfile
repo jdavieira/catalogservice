@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools{
+            maven 'MAVEN_JENKINS'
+    }
+
     stages {
         // checkout de master, based on jenkins configuration
         stage('Checkout') {
