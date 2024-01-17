@@ -16,7 +16,7 @@ pipeline {
         // builds the java project
         stage('Build') {
             steps {
-                sh "mvn clean install -DskipTests"
+                sh "mvn -B -DskipTests clean package"
             }
         }
 
