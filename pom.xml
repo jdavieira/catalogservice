@@ -16,8 +16,6 @@
 	<packaging>jar</packaging>
 	<properties>
 		<java.version>17</java.version>
-		<springdoc.version>2.0.3</springdoc.version>
-		<springdocopenapi.version>1.4.8</springdocopenapi.version>
 		<springsecurityconfig>6.2.1</springsecurityconfig>
 		<org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
 		<org.projectlombok.version>1.18.30</org.projectlombok.version>
@@ -28,12 +26,12 @@
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>${springdoc.version}</version>
+			<version>2.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-ui</artifactId>
-			<version>${springdocopenapi.version}</version>
+			<version>1.7.0</version>
 		</dependency>
 		<!-- End of Swagger dependencies -->
 
@@ -155,11 +153,6 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
 			<version>6.2.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-jsr310</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<!-- End of Test Dependencies -->

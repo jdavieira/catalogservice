@@ -20,6 +20,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.concurrent.TimeUnit;
+
+import static org.awaitility.Awaitility.await;
 import static org.instancio.Select.all;
 import static org.instancio.Select.field;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -54,6 +57,7 @@ public class MessagingIntegrationTests {
     @Test
     void testPublishMessageForHappyPathThenMessagePublishedInQueue() throws Exception {
         // Arrange
+        int listenerCalled = 0;
         var book = Instancio.of(BookRequestDto.class)
                 .ignore(all(field(AuthorDto.class, "id")))
                 .ignore(all(field(LanguageDto.class, "id")))
@@ -79,7 +83,7 @@ public class MessagingIntegrationTests {
         rabbitTemplate.convertAndSend("catalog-service-exchange", "catalog-service-routing-key", event);
 
         // Assert
-        Thread.sleep(2000);
+        await().atMost(10000, TimeUnit.SECONDS).until(() -> listenerCalled == 0);
 
         var mvcResult = this.mockMvc.perform(get("/v1/api/book/1")
                 .accept(MediaType.APPLICATION_JSON))
@@ -92,4 +96,6 @@ public class MessagingIntegrationTests {
         assertEquals(book.originalTitle,response.originalTitle);
         assertEquals(expectedStock, response.stockAvailable);
     }
+
+
 }
