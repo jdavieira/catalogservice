@@ -48,6 +48,7 @@ public class BookService {
     public BookDto getBookById(int id) {
 
         var book = this.repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Book not found with the Id: " + id));
+
         return BookMapper.MAPPER.mapBookToBookDto(book);
     }
 
@@ -128,7 +129,11 @@ public class BookService {
 
         try {
             var book = this.repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Book not found with the Id: " + id));
+
             book.setStockAvailable(book.getStockAvailable() + stock);
+
+            this.repository.save(book);
+            logger.info("Book stock updated with success.");
         } catch (EntityNotFoundException ex) {
             logger.warn(ex.getMessage());
         }
