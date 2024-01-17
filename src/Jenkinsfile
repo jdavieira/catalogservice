@@ -25,9 +25,9 @@ pipeline {
         // runs the unit tests
         stage('Unit Test') {
             steps {
-                sh 'mvn -pl : controller test'
-                sh 'mvn -pl : data test'
-                sh 'mvn -pl : service test'
+                sh 'mvn -pl :controller test'
+                sh 'mvn -pl :data test'
+                sh 'mvn -pl :service test'
                 sh 'mvn -Dtest=ApplicationTests test'
             }
 
