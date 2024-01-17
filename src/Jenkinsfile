@@ -16,19 +16,17 @@ pipeline {
         // builds the java project
         stage('Build') {
             steps {
-                sh "ssh -V"
-                sh "mvn -version"
-                sh "mvn clean install"
+                sh "mvn clean install -DskipTests"
             }
         }
 
         // runs the unit tests
         stage('Unit Test') {
             steps {
-                sh 'mvnw -Dtest="com.critical.catalogservice/controller/*" test'
-                sh 'mvnw -Dtest="com.critical.catalogservice/data/*" test'
-                sh 'mvnw -Dtest="com.critical.catalogservice/service/*" test'
-                sh 'mvnw -Dtest="*ApplicationTests" test'
+                sh 'mvn -Dtest="com.critical.catalogservice/controller/*" test'
+                sh 'mvn -Dtest="com.critical.catalogservice/data/*" test'
+                sh 'mvn -Dtest="com.critical.catalogservice/service/*" test'
+                sh 'mvn -Dtest="*ApplicationTests" test'
             }
 
             post {
@@ -41,7 +39,7 @@ pipeline {
         // Run integration tests
         stage('Integration Test') {
             steps {
-                sh './mvnw -Dtest="com.critical.catalogservice/integration/*" test'
+                sh './mvn -Dtest="com.critical.catalogservice/integration/*" test'
             }
 
             post {
