@@ -23,9 +23,9 @@ pipeline {
         // runs the unit tests
         stage('Unit Test') {
             steps {
-                sh 'mvn -Dtest="com.critical.catalogservice/controller/**" test'
-                sh 'mvn -Dtest="com.critical.catalogservice/data/**" test'
-                sh 'mvn -Dtest="com.critical.catalogservice/service/**" test'
+                sh 'mvn -Dtest="com/critical/catalogservice/controller/**" test'
+                sh 'mvn -Dtest="com/critical/catalogservice/data/**" test'
+                sh 'mvn -Dtest="com/critical/catalogservice/service/**" test'
                 sh 'mvn -Dtest="*ApplicationTests" test'
             }
 
@@ -39,7 +39,7 @@ pipeline {
         // Run integration tests
         stage('Integration Test') {
             steps {
-                sh './mvn -Dtest="com.critical.catalogservice/integration/**" test'
+                sh 'mvn -Dtest="com/critical/catalogservice/integration/**" test'
             }
 
             post {
