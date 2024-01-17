@@ -25,10 +25,10 @@ pipeline {
         // runs the unit tests
         stage('Unit Test') {
             steps {
-                sh './mvnw -Dtest="com.critical.catalogservice/controller/*" test'
-                sh './mvnw -Dtest="com.critical.catalogservice/data/*" test'
-                sh './mvnw -Dtest="com.critical.catalogservice/service/*" test'
-                sh 'mvn -Dtest=ApplicationTests test'
+                sh 'mvnw -Dtest="com.critical.catalogservice/controller/*" test'
+                sh 'mvnw -Dtest="com.critical.catalogservice/data/*" test'
+                sh 'mvnw -Dtest="com.critical.catalogservice/service/*" test'
+                sh 'mvnw -Dtest="*ApplicationTests" test'
             }
 
             post {
