@@ -25,7 +25,10 @@ pipeline {
         // runs the unit tests
         stage('Unit Test') {
             steps {
-                sh 'mvn test'
+                sh 'mvn -pl : controller test'
+                sh 'mvn -pl : data test'
+                sh 'mvn -pl : service test'
+                sh 'mvn -Dtest=ApplicationTests test'
             }
 
             post {
@@ -38,8 +41,7 @@ pipeline {
         // Run integration tests
         stage('Integration Test') {
             steps {
-                println 'test'
-                //sh 'mvn verify -Pintegration-test'
+                sh 'mvn -pl :integration test'
             }
 
             post {

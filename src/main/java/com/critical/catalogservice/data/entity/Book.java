@@ -48,7 +48,7 @@ public class Book {
     @Size(max = 1000)
     private String synopsis;
 
-    @Column(name = "Is_Series", nullable = false, columnDefinition = "TINYINT(1)")
+    @Column(name = "Is_Series", nullable = false)
     private boolean isSeries;
 
     @Column(name = "Availability", nullable = false)

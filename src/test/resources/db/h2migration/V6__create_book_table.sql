@@ -1,5 +1,5 @@
 
-CREATE TABLE IF NOT EXISTS book (
+CREATE TABLE IF NOT EXISTS Book (
     Id INTEGER not null AUTO_INCREMENT,
     Title VARCHAR(100) NOT NULL,
     Original_Title VARCHAR(100) NOT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS book (
     Price DECIMAL(10, 2) NOT NULL,
     Promotional_Price DECIMAL(10, 2),
     Is_Series BOOLEAN NOT NULL,
-    Availability SMALLINT NOT NULL,
+    Availability INTEGER NOT NULL,
     Synopsis VARCHAR(1000) NOT NULL,
     Stock_Available INTEGER NOT NULL,
     Created_On TIMESTAMP NOT NULL,
