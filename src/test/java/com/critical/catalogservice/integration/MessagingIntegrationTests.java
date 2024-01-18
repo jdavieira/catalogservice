@@ -55,9 +55,8 @@ public class MessagingIntegrationTests {
     }
 
     @Test
-    void testPublishMessageForHappyPathThenMessagePublishedInQueue() throws Exception {
+    void givenBookStockUpdate_whenBookExists_thenStockUpdatedWithSuccess() throws Exception {
         // Arrange
-        int listenerCalled = 0;
         var book = Instancio.of(BookRequestDto.class)
                 .ignore(all(field(AuthorDto.class, "id")))
                 .ignore(all(field(LanguageDto.class, "id")))
@@ -73,7 +72,7 @@ public class MessagingIntegrationTests {
 
         this.mockMvc.perform(post("/v1/api/book").content(requestBody)
                         .contentType("application/json"))
-                .andExpect(status().isOk());
+                        .andExpect(status().isOk());
 
         var expectedStock = book.stockAvailable + 10000;
 
@@ -83,7 +82,7 @@ public class MessagingIntegrationTests {
         rabbitTemplate.convertAndSend("catalog-service-exchange", "catalog-service-routing-key", event);
 
         // Assert
-        await().atMost(10000, TimeUnit.SECONDS).until(() -> listenerCalled == 0);
+        await().atMost(10000, TimeUnit.SECONDS).until(() -> true);
 
         var mvcResult = this.mockMvc.perform(get("/v1/api/book/1")
                 .accept(MediaType.APPLICATION_JSON))
