@@ -100,6 +100,14 @@
 		</dependency>
 		<!-- End Rabbit MQ dependencies-->
 
+		<!-- Start Job Run dependencies -->
+		<dependency>
+			<groupId>org.jobrunr</groupId>
+			<artifactId>jobrunr-spring-boot-starter</artifactId>
+			<version>5.3.3</version>
+		</dependency>
+		<!-- End Job Run dependencies -->
+
 		<!-- Start of Test Dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

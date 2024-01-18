@@ -91,6 +91,18 @@ public class MessagingIntegrationTests {
 
         var response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), BookDto.class);
 
+        if(expectedStock !=  response.stockAvailable){
+
+            await().atMost(5000, TimeUnit.SECONDS).until(() -> true);
+
+            mvcResult = this.mockMvc.perform(get("/v1/api/book/1")
+                            .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andReturn();
+
+            response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), BookDto.class);
+        }
+
         assertEquals(book.title,response.title);
         assertEquals(book.originalTitle,response.originalTitle);
         assertEquals(expectedStock, response.stockAvailable);
