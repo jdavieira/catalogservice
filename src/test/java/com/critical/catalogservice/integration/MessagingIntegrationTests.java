@@ -55,7 +55,7 @@ public class MessagingIntegrationTests {
     }
 
     @Test
-    void testPublishMessageForHappyPathThenMessagePublishedInQueue() throws Exception {
+    void givenBookStockUpdate_whenBookExists_thenStockUpdatedWithSuccess() throws Exception {
         // Arrange
         int listenerCalled = 0;
         var book = Instancio.of(BookRequestDto.class)
