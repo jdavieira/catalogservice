@@ -12,12 +12,15 @@ import com.critical.catalogservice.service.book.mapper.BookMapper;
 import com.critical.catalogservice.util.exception.EntityNullException;
 import com.critical.catalogservice.util.exception.SaveEntityException;
 import jakarta.persistence.EntityNotFoundException;
+import org.jobrunr.jobs.annotations.Job;
+import org.jobrunr.scheduling.JobScheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,9 +31,12 @@ public class BookService {
 
     private final BookRepository repository;
 
-    public BookService(BookRepository repository) {
+    private final JobScheduler jobScheduler;
+
+    public BookService(BookRepository repository, JobScheduler jobScheduler) {
 
         this.repository = repository;
+        this.jobScheduler = jobScheduler;
     }
 
     public List<BookDto> getAllBooks() {
@@ -125,6 +131,7 @@ public class BookService {
         }
     }
 
+    @Job(name="Update Book Stock", retries=5)
     public void updateBookStock(int id, int stock) {
 
         try {
@@ -136,6 +143,7 @@ public class BookService {
             logger.info("Book stock updated with success.");
         } catch (EntityNotFoundException ex) {
             logger.warn(ex.getMessage());
+            jobScheduler.schedule(Instant.now().plusSeconds(20), () -> this.updateBookStock(id, stock));
         }
     }
 
