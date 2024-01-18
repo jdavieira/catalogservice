@@ -10,6 +10,7 @@ import com.critical.catalogservice.util.exception.SaveEntityException;
 import jakarta.persistence.EntityNotFoundException;
 import nl.altindag.log.LogCaptor;
 import org.instancio.Instancio;
+import org.jobrunr.scheduling.JobScheduler;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,8 @@ public class BookServiceTests {
 
     private BookRepository repository;
 
+    private JobScheduler jobScheduler;
+
     private BookService service;
 
     @BeforeEach
@@ -36,7 +39,8 @@ public class BookServiceTests {
 
         logCaptor = LogCaptor.forClass(BookService.class);
         repository = mock(BookRepository.class);
-        service = new BookService(this.repository);
+        jobScheduler = mock(JobScheduler.class);
+        service = new BookService(this.repository, this.jobScheduler);
     }
 
     @Test
