@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     networks:
-      - postgres-network
+      - books-project
 
   keycloak:
     image: quay.io/keycloak/keycloak:23.0.4
@@ -29,7 +29,7 @@ services:
       - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
     networks:
-      - rabbitmq_go_net
+      - books-project
 
   pgadmin:
     image: dpage/pgadmin4
@@ -41,7 +41,7 @@ services:
     depends_on:
       - postgres
     networks:
-      - postgres-network
+      - books-project
 
   jenkins:
     image: jenkins/jenkins:lts
@@ -53,6 +53,8 @@ services:
     container_name: jenkins
     volumes:
       - /var/jenkins_home
+    networks:
+      - books-project
 
   artifactory:
     image: releases-docker.jfrog.io/jfrog/artifactory-oss:7.71.11
@@ -79,9 +81,9 @@ services:
       nofile:
         soft: 32000
         hard: 40000
+    networks:
+      - books-project
 
 networks:
-  rabbitmq_go_net:
-    driver: bridge
-  postgres-network:
+  books-project:
     driver: bridge

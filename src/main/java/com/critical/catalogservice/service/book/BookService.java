@@ -9,6 +9,7 @@ import com.critical.catalogservice.dtos.book.BookRequestDto;
 import com.critical.catalogservice.dtos.book.BookUpdateRequestDto;
 import com.critical.catalogservice.service.book.mapper.BookAvailabilityMapper;
 import com.critical.catalogservice.service.book.mapper.BookMapper;
+import com.critical.catalogservice.service.rabbitMq.BookStockProducer;
 import com.critical.catalogservice.util.exception.EntityNullException;
 import com.critical.catalogservice.util.exception.SaveEntityException;
 import jakarta.persistence.EntityNotFoundException;
@@ -33,10 +34,14 @@ public class BookService {
 
     private final JobScheduler jobScheduler;
 
-    public BookService(BookRepository repository, JobScheduler jobScheduler) {
+    private final BookStockProducer bookStockProducer;
+
+
+    public BookService(BookRepository repository, JobScheduler jobScheduler, BookStockProducer bookStockProducer) {
 
         this.repository = repository;
         this.jobScheduler = jobScheduler;
+        this.bookStockProducer =bookStockProducer;
     }
 
     public List<BookDto> getAllBooks() {
@@ -123,6 +128,7 @@ public class BookService {
 
         try {
             var savedBook = this.repository.save(book);
+            bookStockProducer.sendBockStockRequestMessage(savedBook.getId(), savedBook.getStockAvailable());
             logger.info("Book saved with success.");
             return savedBook.getId();
         } catch (Exception exception) {
@@ -140,6 +146,9 @@ public class BookService {
             book.setStockAvailable(book.getStockAvailable() + stock);
 
             this.repository.save(book);
+
+            bookStockProducer.sendBockStockRequestMessage(id, stock);
+
             logger.info("Book stock updated with success.");
         } catch (EntityNotFoundException ex) {
             logger.warn(ex.getMessage());
@@ -167,6 +176,8 @@ public class BookService {
         existingBook.setPrice(book.price);
         existingBook.setPromotionalPrice(book.promotionalPrice);
         saveBook(existingBook);
+
+        bookStockProducer.sendBockStockRequestMessage(existingBook.getId(), existingBook.getStockAvailable());
         return true;
     }
 

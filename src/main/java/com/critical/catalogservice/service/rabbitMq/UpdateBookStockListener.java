@@ -18,8 +18,8 @@ public class UpdateBookStockListener {
     private BookService service;
 
     @RabbitListener(bindings = @QueueBinding(value = @Queue(value = "catalog.queue.update-book-stock", durable = "true"),
-            exchange = @Exchange(value = "catalog-service-exchange", ignoreDeclarationExceptions = "true"),
-            key = "catalog-service-routing-key"))
+            exchange = @Exchange(value = "catalog.queue.exchange", ignoreDeclarationExceptions = "true"),
+            key = "catalog.queue.routing.key"))
     public void onUpdateBookStock(UpdateBookStockEvent event) {
         log.info("Update Book Stock Event Received: " + event.id + " - " + event.stock);
 

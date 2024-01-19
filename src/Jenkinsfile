@@ -40,6 +40,7 @@ pipeline {
         stage('Integration Test') {
             steps {
                 sh 'mvn -Dtest="*ControllerIntegrationTests" test'
+                sh 'mvn -Dtest="*MessagingIntegrationTests" test'
             }
 
             post {

@@ -1,7 +1,10 @@
 package com.critical.catalogservice.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -21,6 +24,15 @@ public class RabbitMQConfig {
     @Value("${catalog.rabbitmq.queue-update-book-stock}")
     String queueUpdateBookStockName;
 
+    @Value("${catalog.rabbitmq.queue-book-stock-request}")
+    String queueBookStockRequestName;
+
+    @Value("${catalog.rabbitmq.queue.exchange}")
+    private  String exchange;
+
+    @Value("${catalog.rabbitmq.queue.routing.key}")
+    private  String routingKey;
+
     public RabbitMQConfig(CachingConnectionFactory cachingConnectionFactory) {
 
         this.cachingConnectionFactory = cachingConnectionFactory;
@@ -36,6 +48,24 @@ public class RabbitMQConfig {
     public Queue CreateCatalogUpdateBookStock() {
 
         return new Queue(queueUpdateBookStockName);
+    }
+
+    @Bean
+    public Queue CreateBookStockRequestQueue() {
+
+        return new Queue(queueBookStockRequestName);
+    }
+
+
+    @Bean
+    public TopicExchange exchange(){
+        return new TopicExchange(exchange);
+    }
+    @Bean
+    public Binding Jsonbinding(){
+        return BindingBuilder.bind(CreateBookStockRequestQueue())
+                .to(exchange())
+                .with(routingKey);
     }
 
     @Bean

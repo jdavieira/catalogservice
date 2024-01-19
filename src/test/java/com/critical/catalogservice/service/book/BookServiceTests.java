@@ -5,6 +5,7 @@ import com.critical.catalogservice.data.repository.BookRepository;
 import com.critical.catalogservice.dtos.book.BookAvailabilityDto;
 import com.critical.catalogservice.dtos.book.BookRequestDto;
 import com.critical.catalogservice.dtos.book.BookUpdateRequestDto;
+import com.critical.catalogservice.service.rabbitMq.BookStockProducer;
 import com.critical.catalogservice.util.exception.EntityNullException;
 import com.critical.catalogservice.util.exception.SaveEntityException;
 import jakarta.persistence.EntityNotFoundException;
@@ -14,6 +15,7 @@ import org.jobrunr.scheduling.JobScheduler;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
@@ -37,7 +39,7 @@ public class BookServiceTests {
 
         logCaptor = LogCaptor.forClass(BookService.class);
         repository = mock(BookRepository.class);
-        service = new BookService(this.repository,  mock(JobScheduler.class));
+        service = new BookService(this.repository,  mock(JobScheduler.class),  mock(BookStockProducer.class));
     }
 
     @Test
