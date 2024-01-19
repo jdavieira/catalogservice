@@ -79,7 +79,7 @@ public class MessagingIntegrationTests {
         var event = new UpdateBookStockEvent(1, 10000);
 
         // Act
-        rabbitTemplate.convertAndSend("catalog-service-exchange", "catalog-service-routing-key", event);
+        rabbitTemplate.convertAndSend("catalog.queue.exchange", "catalog.queue.routing.key", event);
 
         // Assert
         await().atMost(10000, TimeUnit.SECONDS).until(() -> true);
