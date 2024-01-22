@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UpdateBookStockEvent {
 
-    public int id;
+    public int bookId;
 
     public int stock;
 }

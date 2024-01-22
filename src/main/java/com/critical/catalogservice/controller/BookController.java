@@ -32,7 +32,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/v1/api")
 public class BookController {
-    private static final Logger logger = LoggerFactory.getLogger(AuthorController.class);
+    private static final Logger logger = LoggerFactory.getLogger(BookController.class);
 
     private final BookService bookService;
 
