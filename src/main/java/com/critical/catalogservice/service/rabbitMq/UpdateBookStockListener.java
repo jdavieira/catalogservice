@@ -10,8 +10,6 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
 @Component
 @Slf4j
 public class UpdateBookStockListener {
@@ -25,12 +23,7 @@ public class UpdateBookStockListener {
     public void onUpdateBookStock(UpdateBookStockEvent event) {
         log.info("Update Book Stock Event Received: " + event.bookId + " - " + event.stock);
 
-        if(null == event){
-            log.error("Update Book Stock Event Received is null");
-            return;
-        }
-
-        service.updateBookStock(event.bookId, event.stock, UUID.randomUUID());
+        service.updateBookStock(event.bookId, event.stock);
 
         log.info("Update Book Stock Event finished: " + event.bookId + " - " + event.stock);
     }
