@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class BookStockProducer {
 
-    @Value("catalog.rabbitmq.queue.routing.key")
+    @Value("${catalog.rabbitmq.queue.routing.key}")
     private String routingKey;
 
-    @Value("catalog.rabbitmq.queue.exchange")
+    @Value("${catalog.rabbitmq.queue.exchange}")
     private String exchange;
 
     private final RabbitTemplate rabbitTemplate;

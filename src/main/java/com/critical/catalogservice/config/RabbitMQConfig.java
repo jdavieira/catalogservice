@@ -17,10 +17,6 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
 
     private final CachingConnectionFactory cachingConnectionFactory;
-
-    @Value("${catalog.rabbitmq.queue}")
-    String queueName;
-
     @Value("${catalog.rabbitmq.queue-update-book-stock}")
     String queueUpdateBookStockName;
 
@@ -30,18 +26,18 @@ public class RabbitMQConfig {
     @Value("${catalog.rabbitmq.queue.exchange}")
     private  String exchange;
 
+    @Value("${catalog.queue.update-book-stock-exchange}")
+    private  String exchangeUpdateBookStock;
+
     @Value("${catalog.rabbitmq.queue.routing.key}")
     private  String routingKey;
+
+    @Value("${catalog.queue.catalog.queue.update-book-stock-routing-key}")
+    private String stockRoutingKey;
 
     public RabbitMQConfig(CachingConnectionFactory cachingConnectionFactory) {
 
         this.cachingConnectionFactory = cachingConnectionFactory;
-    }
-
-    @Bean
-    public Queue queue() {
-
-        return new Queue(queueName, false);
     }
 
     @Bean
@@ -61,11 +57,19 @@ public class RabbitMQConfig {
     public TopicExchange exchange(){
         return new TopicExchange(exchange);
     }
+
     @Bean
-    public Binding Jsonbinding(){
+    public Binding jsonBinding(){
         return BindingBuilder.bind(CreateBookStockRequestQueue())
                 .to(exchange())
                 .with(routingKey);
+    }
+
+    @Bean
+    public Binding jsonConsumerBinding(){
+        return BindingBuilder.bind(CreateCatalogUpdateBookStock())
+                .to(new TopicExchange(exchangeUpdateBookStock))
+                .with(stockRoutingKey);
     }
 
     @Bean

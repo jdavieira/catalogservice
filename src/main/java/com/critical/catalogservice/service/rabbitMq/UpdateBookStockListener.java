@@ -10,6 +10,8 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 @Slf4j
 public class UpdateBookStockListener {
@@ -18,18 +20,18 @@ public class UpdateBookStockListener {
     private BookService service;
 
     @RabbitListener(bindings = @QueueBinding(value = @Queue(value = "catalog.queue.update-book-stock", durable = "true"),
-            exchange = @Exchange(value = "catalog.queue.exchange", ignoreDeclarationExceptions = "true"),
-            key = "catalog.queue.routing.key"))
+            exchange = @Exchange(value = "catalog.queue.update-book-stock-exchange", ignoreDeclarationExceptions = "true"),
+            key = "catalog.queue.catalog.queue.update-book-stock-routing-key"))
     public void onUpdateBookStock(UpdateBookStockEvent event) {
-        log.info("Update Book Stock Event Received: " + event.id + " - " + event.stock);
+        log.info("Update Book Stock Event Received: " + event.bookId + " - " + event.stock);
 
         if(null == event){
             log.error("Update Book Stock Event Received is null");
             return;
         }
 
-        service.updateBookStock(event.id, event.stock);
+        service.updateBookStock(event.bookId, event.stock, UUID.randomUUID());
 
-        log.info("Update Book Stock Event finished: " + event.id + " - " + event.stock);
+        log.info("Update Book Stock Event finished: " + event.bookId + " - " + event.stock);
     }
 }

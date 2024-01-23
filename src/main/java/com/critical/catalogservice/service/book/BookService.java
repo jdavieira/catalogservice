@@ -21,9 +21,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class BookService {
@@ -138,7 +138,7 @@ public class BookService {
     }
 
     @Job(name="Update Book Stock", retries=5)
-    public void updateBookStock(int id, int stock) {
+    public void updateBookStock(int id, int stock, UUID uuid) {
 
         try {
             var book = this.repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Book not found with the Id: " + id));
@@ -152,7 +152,7 @@ public class BookService {
             logger.info("Book stock updated with success.");
         } catch (EntityNotFoundException ex) {
             logger.warn(ex.getMessage());
-            jobScheduler.schedule(Instant.now().plusSeconds(20), () -> this.updateBookStock(id, stock));
+            jobScheduler.enqueue(uuid, () -> this.updateBookStock(id, stock,uuid));
         }
     }
 
