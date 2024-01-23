@@ -79,7 +79,9 @@ public class MessagingIntegrationTests {
         var event = new UpdateBookStockEvent(1, 10000);
 
         // Act
-        rabbitTemplate.convertAndSend("catalog.queue.exchange", "catalog.queue.routing.key", event);
+        rabbitTemplate.convertAndSend(
+                "catalog.queue.update-book-stock-exchange",
+                "catalog.queue.catalog.queue.update-book-stock-routing-key", event);
 
         // Assert
         await().atMost(10000, TimeUnit.SECONDS).until(() -> true);
@@ -93,7 +95,7 @@ public class MessagingIntegrationTests {
 
         if(expectedStock !=  response.stockAvailable){
 
-            await().atMost(5000, TimeUnit.SECONDS).until(() -> true);
+            await().atMost(10000, TimeUnit.SECONDS).until(() -> true);
 
             mvcResult = this.mockMvc.perform(get("/v1/api/book/1")
                             .accept(MediaType.APPLICATION_JSON))
