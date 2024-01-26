@@ -130,8 +130,6 @@ public class BookService {
 
     }
 
-
-
     @Job(name="Update Book Stock", retries=10)
     public void updateBookStock(int id, int stock) {
 
@@ -245,6 +243,23 @@ public class BookService {
             this.repository.save(book);
 
             bookStockProducer.sendBockStockRequestMessage(id, stock);
+
+            logger.info("Book stock updated with success.");
+        }catch (EntityNotFoundException ex) {
+            logger.warn(ex.getMessage());
+            throw ex;
+        }
+    }
+
+    public void sellBook(int bookId, int stock) {
+        try{
+            var book = this.repository.findById(bookId).orElseThrow(() -> new EntityNotFoundException("Book not found with the Id: " + bookId));
+
+            book.setStockAvailable(book.getStockAvailable() - stock);
+
+            this.repository.save(book);
+
+            bookStockProducer.sendBockStockRequestMessage(bookId, stock);
 
             logger.info("Book stock updated with success.");
         }catch (EntityNotFoundException ex) {

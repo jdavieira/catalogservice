@@ -287,4 +287,32 @@ public class BookController {
                     .body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage()));
         }
     }
+
+
+    @Operation(summary = "Update a Book")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "403", content =
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "404", content =
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "500", content =
+                    {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}) })
+    @PutMapping("/book/{bookId}/{stock}")
+    public ResponseEntity sellBook(@PathVariable("bookId") int bookId, @PathVariable("stock") int stock) {
+        try {
+            this.bookService.sellBook(bookId, stock);
+            return ResponseEntity.noContent().build();
+        } catch (SaveEntityException | EntityNullException exception){
+            logger.warn(exception.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage()));
+        }catch (EntityNotFoundException exception){
+            logger.warn(exception.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage()));
+        }
+    }
 }
